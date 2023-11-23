@@ -22,4 +22,4 @@ By sending a new key to encrypt each POST message, replay attacks are mitigated.
 The biggest issue with plain HTTP is an attackers ability to completely modify the data. By redirecting to a phishing site, removing the encryption JS, or injecting their own JS, the attacker can easily bypass the encryption protocol.<br>
 <br>
 <h1>Verdict</hr>
-HTTPS should always be preffered over this method. It's able to stop all the MITM methods I mentioned above and its already proven technology. But when HTTPS is not an option, I think this is better than nothing. 
+HTTPS should always be preffered over this method. It's able to stop all the MITM methods I mentioned above and its already proven technology. But when HTTPS is not an option, I think this is better than nothing. <br>
