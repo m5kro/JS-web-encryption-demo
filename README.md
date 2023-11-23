@@ -8,6 +8,13 @@ Server encrypts data (ex. admin page) with password as key --> Client recives an
  <br>
 Post data: <br>
 Client sends any post data encrypted with password --> Server decrypts post data <br>
+<be>
+<h1>How to Run</h1>
+In the terminal run: <br>
+npm install<br>
+node server.js<br>
+<br>
+go to http://127.0.0.1:3000/ <br>
 <br>
 <h1>What this is for</h1>
 Most people will see this project and think, doesn't HTTPS already stop the MITM issue? Yes, HTTPS does encrypt web pages and it does it better. However, there are still sites using unencrypted HTTP. I'm refering to local login pages, like router admin pages or printer login pages. Many of these are using pain HTTP or self signed HTTPS certificates, which are vulnerable to MITM attacks.<br>
