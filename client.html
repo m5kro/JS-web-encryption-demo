@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+  <!-- Include CryptoJS from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/hmac-sha256.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/aes.min.js"></script>
+</head>
+<body>
+  <h1>Login Page</h1>
+  <form id="loginForm">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+    <br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+    <br>
+    <button type="button" onclick="login()">Login</button>
+  </form>
+
+  <!-- Test Section -->
+  <h2>Test Post Functionality</h2>
+  <form id="testPostForm">
+    <label for="testData">Test Data:</label>
+    <input type="text" id="testData" name="testData" required>
+    <button type="button" onclick="testPost()">Test Post</button>
+  </form>
+
+  <script>
+    async function login() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const hashedPassword = hashAndEncodeBase64(password);
+
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, hashedPassword }),
+      });
+
+      if (response.ok) {
+        const encryptedData = await response.text();
+        const success = await decryptWithPassword(encryptedData, password);
+        alert(success);
+        const timestamp = encryptWithPassword(new Date().toISOString(), password);
+        const postData = { encryptedData, username, timestamp };
+        await postEncryptedData(postData);
+        alert('Encryption Chain Successful');
+      } else {
+        alert('Login failed');
+      }
+    }
+
+    async function postEncryptedData(postData) {
+      const response = await fetch('/post-data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData),
+      });
+
+      if (response.ok) {
+        alert('Data received successfully, Check terminal');
+      } else {
+        alert('Unauthorized: Timestamp mismatch');
+      }
+    }
+
+    function hashAndEncodeBase64(data) {
+      const base64Data = btoa(data);
+      const hash = CryptoJS.SHA256(base64Data).toString(CryptoJS.enc.Base64);
+      return hash;
+    }
+
+    function decryptWithPassword(encryptedData, password) {
+        try {
+            const bytes = CryptoJS.AES.decrypt(encryptedData, password);
+            const decryptedData = bytes.toString(CryptoJS.enc.Utf8);
+            return decryptedData;
+        } catch (error) {
+            console.error('Decryption error:', error.message);
+            return 'Decryption failed';
+        }
+    }
+
+    async function testPost() {
+      const testData = document.getElementById('testData').value;
+      const username = document.getElementById('username').value;;
+
+      const encryptedData = encryptWithPassword(testData, document.getElementById('password').value);
+      const timestamp = encryptWithPassword(new Date().toISOString(), document.getElementById('password').value);
+      const postData = { encryptedData, username, timestamp };
+
+      await postEncryptedData(postData);
+    }
+
+    function encryptWithPassword(data, password) {
+      const cipher = CryptoJS.AES.encrypt(data, password).toString();
+      return cipher;
+    }
+  </script>
+</body>
+</html>
