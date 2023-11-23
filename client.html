@@ -48,14 +48,14 @@
 
       if (response.ok) {
         // Receive encrypted success message from server
-        const encryptedData = await response.text();
+        let encryptedData = await response.text();
         // Decrypt and show to user
         const success = await decryptWithPassword(encryptedData, password);
         alert(success);
         // Re-encrypt success message to send back to server to ensure chain is working
         const timestamp = encryptWithPassword(new Date().toISOString(), password);
-        const reEncrypt = encryptWithPassword(success, password);
-        const postData = { reEncrypt, username, timestamp };
+        encryptedData = encryptWithPassword(success, password);
+        const postData = { encryptedData, username, timestamp };
         await postEncryptedData(postData);
         alert('Encryption Chain Successful');
       } else {
@@ -80,16 +80,16 @@
       }
     }
 
-    // hash twice to mitigate precomputed hash cracking and to use 1st hash as key
+    // Hash twice to mitigate precomputed hash cracking and to use 1st hash as key
     function hashAndEncodeBase64(data) {
-      const hash = CryptoJS.SHA256(CryptoJS.SHA356(data)).toString(CryptoJS.enc.Base64);
+      const hash = CryptoJS.SHA256(CryptoJS.SHA256(data).toString()).toString(CryptoJS.enc.Base64);
       return hash;
     }
 
     // Decrypt the data in AES using the password as the pre shared key
     function decryptWithPassword(encryptedData, password) {
         try {
-            const bytes = CryptoJS.AES.decrypt(encryptedData, CryptoJS.SHA256(password));
+            const bytes = CryptoJS.AES.decrypt(encryptedData, CryptoJS.SHA256(password).toString());
             const decryptedData = bytes.toString(CryptoJS.enc.Utf8);
             return decryptedData;
         } catch (error) {
@@ -113,7 +113,7 @@
 
     // Encrypt the data in AES using the password as the pre shared key
     function encryptWithPassword(data, password) {
-      const cipher = CryptoJS.AES.encrypt(data, CryptoJS.SHA256(password)).toString();
+      const cipher = CryptoJS.AES.encrypt(data, CryptoJS.SHA256(password).toString()).toString();
       return cipher;
     }
   </script>

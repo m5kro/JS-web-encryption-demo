@@ -80,7 +80,7 @@ function decryptWithPassword(encryptedData, password) {
   }
 }
 
-// Encode the password in base 64 first then hash to mitigate precomputed hash cracking
+// Hash twice to mitigate precomputed hash cracking and to use 1st hash as key
 function hashAndEncodeBase64(data) {
   //const base64Encoded = Buffer.from(data, 'utf-8').toString('base64');
   const hash = CryptoJS.SHA256(data).toString(CryptoJS.enc.Base64);
