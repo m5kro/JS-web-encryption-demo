@@ -14,10 +14,10 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/client.html');
 });
 
-// List of users and passwords, passwords need to be in plaintext to be used as pre shared key
+// List of users and passwords, passwords hashed with sha256, example password is testpass
 const users = {
   user1: {
-    password: 'testpass',
+    password: '13d249f2cb4127b40cfa757866850278793f814ded3c587fe5889e889a7a9f6c',
   },
 };
 
@@ -82,8 +82,8 @@ function decryptWithPassword(encryptedData, password) {
 
 // Encode the password in base 64 first then hash to mitigate precomputed hash cracking
 function hashAndEncodeBase64(data) {
-  const base64Encoded = Buffer.from(data, 'utf-8').toString('base64');
-  const hash = CryptoJS.SHA256(base64Encoded).toString(CryptoJS.enc.Base64);
+  //const base64Encoded = Buffer.from(data, 'utf-8').toString('base64');
+  const hash = CryptoJS.SHA256(data).toString(CryptoJS.enc.Base64);
   return hash;
 }
 
