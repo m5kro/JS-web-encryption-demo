@@ -4,10 +4,10 @@ Heres a diagram of how this works: <br>
 Server sends Login Page with JS --> Client sends username + hashed password --> Server checks hash <br>
 <br>
 If password is correct: <br>
-Server encrypts data (ex. admin page) with password as key --> Client recives and decrypts data with password <br>
+Server saves login timestamp --> Server encrypts data (ex. admin page) with password as key --> Client recives and decrypts data with password <br>
  <br>
 Post data: <br>
-Client sends any post data encrypted with password --> Server decrypts post data <br>
+Client sends any post data encrypted with password + timestamp encrypted with password --> Server decrypts post data --> Server checks timestamp to prevent replay attacks --> Server updates last post timestamp <br>
 <be>
 <h1>How to Run</h1>
 In the terminal run: <br>
