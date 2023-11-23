@@ -23,7 +23,7 @@ Most people will see this project and think, doesn't HTTPS already stop the MITM
 This implementation will help protect against some forms of MITM: <br>
 It will prevent attackers from seeing the data sent unless they know the clients password. <br>
 If done right it can also encrypt HTML data. <br>
-By sending a new key to encrypt each POST message, replay attacks are mitigated. <br>
+By checking timestamp of each POST message, replay attacks are mitigated. <br>
 <br>
 <h1>What this DOES NOT Protect Against</h1>
 The biggest issue with plain HTTP is an attackers ability to completely modify the data. By redirecting to a phishing site, removing the encryption JS, or injecting their own JS, the attacker can easily bypass the encryption protocol. It also doesn't encrypt data during signup/registration, as there is no pre shared key.<br>
