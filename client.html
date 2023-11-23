@@ -30,9 +30,11 @@
   </form>
 
   <script>
+    // Send login data as POST
     async function login() {
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
+      // Hash password to prevent MITM
       const hashedPassword = hashAndEncodeBase64(password);
 
       const response = await fetch('/login', {
@@ -44,11 +46,15 @@
       });
 
       if (response.ok) {
+        // Receive encrypted success message from server
         const encryptedData = await response.text();
+        // Decrypt and show to user
         const success = await decryptWithPassword(encryptedData, password);
         alert(success);
+        // Re-encrypt success message to send back to server to ensure chain is working
         const timestamp = encryptWithPassword(new Date().toISOString(), password);
-        const postData = { encryptedData, username, timestamp };
+        const reEncrypt = encryptWithPassword(success, password);
+        const postData = { reEncrypt, username, timestamp };
         await postEncryptedData(postData);
         alert('Encryption Chain Successful');
       } else {
@@ -56,6 +62,7 @@
       }
     }
 
+    // Send POST data, if sucessful the data will be shown in the terminal
     async function postEncryptedData(postData) {
       const response = await fetch('/post-data', {
         method: 'POST',
@@ -72,12 +79,14 @@
       }
     }
 
+    // Encode the password in base 64 first then hash to mitigate precomputed hash cracking
     function hashAndEncodeBase64(data) {
       const base64Data = btoa(data);
       const hash = CryptoJS.SHA256(base64Data).toString(CryptoJS.enc.Base64);
       return hash;
     }
 
+    // Decrypt the data in AES using the password as the pre shared key
     function decryptWithPassword(encryptedData, password) {
         try {
             const bytes = CryptoJS.AES.decrypt(encryptedData, password);
@@ -89,17 +98,20 @@
         }
     }
 
+    // Test POST data be sending encrypted test data, username, and encrypted timestamp
     async function testPost() {
       const testData = document.getElementById('testData').value;
-      const username = document.getElementById('username').value;;
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
 
-      const encryptedData = encryptWithPassword(testData, document.getElementById('password').value);
-      const timestamp = encryptWithPassword(new Date().toISOString(), document.getElementById('password').value);
+      const encryptedData = encryptWithPassword(testData, password);
+      const timestamp = encryptWithPassword(new Date().toISOString(), password);
       const postData = { encryptedData, username, timestamp };
 
       await postEncryptedData(postData);
     }
 
+    // Encrypt the data in AES using the password as the pre shared key
     function encryptWithPassword(data, password) {
       const cipher = CryptoJS.AES.encrypt(data, password).toString();
       return cipher;
