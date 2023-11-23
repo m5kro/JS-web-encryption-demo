@@ -1,4 +1,4 @@
-# JS-web-encryption-POC
+# JS-web-encryption-demo
 A demo/proof of concept for encrypting web pages with JS. <br>
 Heres a diagram of how this works: <br>
 Server sends Login Page with JS --> Client sends username + hashed password --> Server checks hash <br>
